@@ -1,2 +1,2 @@
-# Bot_prueba
+# Bot prueba
 Inicio de prueba de bot financiero
