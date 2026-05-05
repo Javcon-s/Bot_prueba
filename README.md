@@ -1,5 +1,6 @@
 # Bot prueba para proyecto final de Metodología de la Investigación
 Inicio de prueba de bot financiero
+
 Descripción del proyecto
 
 Este proyecto consiste en el desarrollo de un bot de trading algorítmico en Python, creado con fines académicos. El sistema utiliza datos históricos del mercado financiero para simular operaciones de compra y venta de activos, basándose en una estrategia de cruce de medias móviles (SMA).
