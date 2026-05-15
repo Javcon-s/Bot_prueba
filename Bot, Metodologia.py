@@ -6,7 +6,7 @@ from datetime import datetime
 
 
 def obtener_datos(ticker: str, inicio: str, fin: str) -> pd.DataFrame:
-    print(f"\n📥 Descargando datos de {ticker} desde {inicio} hasta {fin}...")
+    print(f"\n[INFO] Descargando datos de {ticker} desde {inicio} hasta {fin}...")
 
     df = yf.download(ticker, start=inicio, end=fin, auto_adjust=True)
 
@@ -16,7 +16,7 @@ def obtener_datos(ticker: str, inicio: str, fin: str) -> pd.DataFrame:
     if isinstance(df.columns, pd.MultiIndex):
         df.columns = df.columns.get_level_values(0)
 
-    print(f"✅ {len(df)} registros descargados correctamente.")
+    print(f"[OK] {len(df)} registros descargados correctamente.")
     return df
 
 
@@ -26,9 +26,9 @@ def calcular_medias_moviles(df: pd.DataFrame,
     df['SMA_Corta'] = df['Close'].rolling(window=periodo_corto).mean()
     df['SMA_Larga'] = df['Close'].rolling(window=periodo_largo).mean()
 
-    print(f"\n📊 Medias móviles calculadas:")
-    print(f"   → SMA Corta : {periodo_corto} períodos")
-    print(f"   → SMA Larga : {periodo_largo} períodos")
+    print(f"\n[DATA] Medias móviles calculadas:")
+    print(f"   -> SMA Corta : {periodo_corto} períodos")
+    print(f"   -> SMA Larga : {periodo_largo} períodos")
 
     return df
 
@@ -64,9 +64,9 @@ def simular_trading(df: pd.DataFrame, capital_inicial: float = 1000.0) -> dict:
     historial     = []
     num_operaciones = 0
 
-    print(f"\n💰 Capital inicial: ${capital_inicial:,.2f}")
+    print(f"\n[$] Capital inicial: ${capital_inicial:,.2f}")
     print("=" * 60)
-    print("📋 HISTORIAL DE OPERACIONES:")
+    print("[LOG] HISTORIAL DE OPERACIONES:")
     print("-" * 60)
 
     for fecha, fila in df.iterrows():
@@ -87,7 +87,7 @@ def simular_trading(df: pd.DataFrame, capital_inicial: float = 1000.0) -> dict:
                 'Capital': 0.0
             }
             historial.append(operacion)
-            print(f"🟢 COMPRA  | {fecha.date()} | Precio: ${precio:>8.2f} | "
+            print(f"[BUY ] COMPRA | {fecha.date()} | Precio: ${precio:>8.2f} | "
                   f"Acciones: {acciones:.4f}")
 
         elif senal == -1 and en_posicion:
@@ -104,13 +104,13 @@ def simular_trading(df: pd.DataFrame, capital_inicial: float = 1000.0) -> dict:
                 'Capital': round(capital, 2)
             }
             historial.append(operacion)
-            print(f"🔴 VENTA   | {fecha.date()} | Precio: ${precio:>8.2f} | "
+            print(f"[SELL] VENTA  | {fecha.date()} | Precio: ${precio:>8.2f} | "
                   f"Capital: ${capital:,.2f}")
 
     ultimo_precio = float(df['Close'].iloc[-1])
     if en_posicion:
         capital = acciones * ultimo_precio
-        print(f"\n⚠️  Posición abierta al final — valorada a ${capital:,.2f}")
+        print(f"\n[WARN] Posición abierta al final — valorada a ${capital:,.2f}")
 
     ganancia = capital - capital_inicial
     rendimiento = (ganancia / capital_inicial) * 100
@@ -129,17 +129,17 @@ def simular_trading(df: pd.DataFrame, capital_inicial: float = 1000.0) -> dict:
 
 def mostrar_resultados(resultados: dict) -> None:
     ganancia = resultados['ganancia']
-    emoji    = "📈" if ganancia >= 0 else "📉"
+    indicador = "[UP ]" if ganancia >= 0 else "[DOWN]"
     signo    = "+" if ganancia >= 0 else ""
 
     print("\n" + "=" * 60)
-    print("           📊  RESUMEN DE LA SIMULACIÓN  📊")
+    print("           [RESUMEN DE LA SIMULACIÓN]")
     print("=" * 60)
-    print(f"  💵 Capital inicial   : ${resultados['capital_inicial']:>10,.2f}")
-    print(f"  💰 Capital final     : ${resultados['capital_final']:>10,.2f}")
-    print(f"  {emoji}  Ganancia / Pérdida : {signo}${abs(ganancia):>9,.2f}")
-    print(f"  📉 Rendimiento       : {signo}{resultados['rendimiento_pct']}%")
-    print(f"  🔁 Operaciones totales: {resultados['num_operaciones']:>9}")
+    print(f"  [$] Capital inicial    : ${resultados['capital_inicial']:>10,.2f}")
+    print(f"  [$] Capital final      : ${resultados['capital_final']:>10,.2f}")
+    print(f"  {indicador} Ganancia / Pérdida : {signo}${abs(ganancia):>9,.2f}")
+    print(f"  [%] Rendimiento        : {signo}{resultados['rendimiento_pct']}%")
+    print(f"  [#] Operaciones totales: {resultados['num_operaciones']:>9}")
     print("=" * 60)
 
 
@@ -205,7 +205,7 @@ def graficar_resultados(df: pd.DataFrame, ticker: str,
 
     ax.set_title(
         f"Bot de Trading — {ticker} | "
-        f"Capital: ${resultados['capital_inicial']:,.0f} → "
+        f"Capital: ${resultados['capital_inicial']:,.0f} -> "
         f"${resultados['capital_final']:,.2f} "
         f"({'▲' if resultados['ganancia'] >= 0 else '▼'}"
         f"{resultados['rendimiento_pct']}%)",
@@ -226,7 +226,7 @@ def graficar_resultados(df: pd.DataFrame, ticker: str,
     ruta = "trading_resultado.png"
     plt.savefig(ruta, dpi=150, bbox_inches='tight',
                 facecolor='#1a1a2e')
-    print(f"\n🖼️  Gráfica guardada como '{ruta}'")
+    print(f"\n[SAVE] Gráfica guardada como '{ruta}'")
     plt.show()
 
 
